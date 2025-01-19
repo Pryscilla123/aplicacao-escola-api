@@ -4,10 +4,10 @@ namespace AplicacaoEscola.Repository
 {
     public interface IAlunoRepository
     {
-        Task<List<Aluno>> GetAlunosAsync();
+        Task<IEnumerable<Aluno>> GetAlunosAsync();
         Task<Aluno> GetAlunoByIdAsync(int id);
-        Task<int> SaveAsync(Aluno aluno);
-        /*Task<int> UpdateAsync(int id, Aluno aluno);
-        Task<int> DeleteAsync(int id);*/
+        Task<int> SaveAlunoAsync(Aluno aluno);
+        Task<int> UpdateAlunoAsync(int id, Aluno aluno);
+        Task<int> DeleteAlunoAsync(int id);
     }
 }

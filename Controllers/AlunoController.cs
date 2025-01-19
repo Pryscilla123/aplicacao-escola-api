@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AplicacaoEscola.Controllers
 {
     [ApiController]
-    [Route("aluno")]
+    [Route("alunos")]
     public class AlunoController : Controller
     {
         private readonly IAlunoRepository _alunoRepository;
@@ -22,10 +22,11 @@ namespace AplicacaoEscola.Controllers
         {
             var alunos = await _alunoRepository.GetAlunosAsync();
 
-            if(alunos.Count > 0)
+            if(alunos.Any())
             {
                 return Ok(alunos);
             }
+
             return NotFound();
         }
 
@@ -40,6 +41,7 @@ namespace AplicacaoEscola.Controllers
             {
                 return NotFound();
             }
+
             return Ok(aluno);
         }
 
@@ -48,14 +50,43 @@ namespace AplicacaoEscola.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Post([FromBody] Aluno aluno)
         {
-            var registrado = await _alunoRepository.SaveAsync(aluno);
+            var registrado = await _alunoRepository.SaveAlunoAsync(aluno);
 
             if(registrado > 0)
             {
                 return CreatedAtAction(nameof(Get), aluno);
             }
+
             return BadRequest();
         }
 
+        [HttpPut("{id:int}")]
+        [ProducesResponseType(typeof(Aluno), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Put(int id, [FromBody] Aluno aluno)
+        {
+            //Perguntar porque
+            //Perguntar qual a melhor forma de fazer um put
+            //if(!await _alunoExists(id)) return NotFound();
+
+            var result = await _alunoRepository.UpdateAlunoAsync(id, aluno);
+
+            if(result > 0) return NoContent();
+
+            return NotFound();
+
+        }
+
+        [HttpDelete("{id:int}")]
+        [ProducesResponseType(typeof(Aluno), StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _alunoRepository.DeleteAlunoAsync(id);
+
+            if(result > 0) return NoContent();
+
+            return NotFound();
+        }
     }
 }

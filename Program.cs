@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<DbSession>();
 builder.Services.AddTransient<IAlunoRepository, AlunoRepository>();
+builder.Services.AddTransient<IProfessorRepository, ProfessorRepository>();
 
 var app = builder.Build();
 

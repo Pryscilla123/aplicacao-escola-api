@@ -1,6 +1,7 @@
 ﻿using AplicacaoEscola.Data;
 using AplicacaoEscola.Models;
 using Dapper;
+using System.Data;
 
 namespace AplicacaoEscola.Repository
 {
@@ -13,7 +14,7 @@ namespace AplicacaoEscola.Repository
             _db = dbSession;
         }
 
-        public async Task<List<Aluno>> GetAlunosAsync()
+        public async Task<IEnumerable<Aluno>> GetAlunosAsync()
         {
             using(var conn = _db.Connection)
             {
@@ -29,7 +30,7 @@ namespace AplicacaoEscola.Repository
             {
                 string query = "SELECT * FROM Alunos WHERE id = @id";
                 var parametros = new DynamicParameters();
-                parametros.Add("@id", id);
+                parametros.Add("@id", id, DbType.Int32);
 
                 Aluno aluno = await conn.QueryFirstOrDefaultAsync<Aluno>(query, parametros);
 
@@ -37,14 +38,46 @@ namespace AplicacaoEscola.Repository
             }
         }
 
-        public async Task<int> SaveAsync(Aluno aluno)
+        public async Task<int> SaveAlunoAsync(Aluno aluno)
         {
             using(var conn = _db.Connection)
             {
                 string query = "INSERT INTO Alunos(nome, idade) VALUES (@nome, @idade)";
                 var parametros = new DynamicParameters();
-                parametros.Add("@nome", aluno.Nome);
-                parametros.Add("@idade", aluno.Idade);
+                parametros.Add("@nome", aluno.Nome, DbType.AnsiString);
+                parametros.Add("@idade", aluno.Idade, DbType.Int16);
+
+                var result = await conn.ExecuteAsync(query, parametros);
+                return result;
+            }
+        }
+
+        public async Task<int> UpdateAlunoAsync(int id, Aluno aluno)
+        {
+            using(var conn = _db.Connection)
+            {
+                string query = @"
+                    UPDATE alunos SET nome = @nome, idade = @idade
+                    WHERE id = @id
+                    ";
+
+                var parametros = new DynamicParameters();
+                parametros.Add("@id", id);
+                parametros.Add("@nome", aluno.Nome, DbType.AnsiString);
+                parametros.Add("@idade", aluno.Idade, DbType.Int16);
+
+                var result = await conn.ExecuteAsync(query, parametros); 
+                return result;
+            }
+        }
+
+        public async Task<int> DeleteAlunoAsync(int id)
+        {
+            using(var conn = _db.Connection)
+            {
+                string query = @"DELETE FROM Alunos WHERE id = @id";
+                var parametros = new DynamicParameters();
+                parametros.Add("@id", id, DbType.Int32);
 
                 var result = await conn.ExecuteAsync(query, parametros);
                 return result;
