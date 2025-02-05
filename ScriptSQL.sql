@@ -21,16 +21,16 @@ CREATE TABLE materias
     professor_id INT DEFAULT NULL,
     periodo INT,
     numero_vagas_total INT NOT NULL,
-    numero_vagas_atual INT DEFAULT 0,
     CONSTRAINT fk_professor_id FOREIGN KEY (professor_id) REFERENCES professores(id) 
 );
 
 CREATE TABLE aluno_materia
 (
+    id int PRIMARY KEY IDENTITY,
     aluno_id int NOT NULL,
     materia_id int NOT NULL,
     ano int not null DEFAULT cast(YEAR(GETDATE()) as int),
-    CONSTRAINT pk_alunos_materias PRIMARY KEY (aluno_id, materia_id),
+    CONSTRAINT pk_alunos_materias UNIQUE (aluno_id, materia_id),
     CONSTRAINT fk_aluno_id FOREIGN KEY (aluno_id) REFERENCES alunos(id),
     CONSTRAINT fk_materia_id FOREIGN KEY (materia_id) REFERENCES materias(id)
 );
@@ -61,3 +61,5 @@ INNER JOIN professores as p on p.id=m.professor_id
 
 UPDATE materias SET numero_vagas_atual=23 where id = 1;
 UPDATE materias SET numero_vagas_atual=25 where id = 2;
+
+DROP DATABASE Escola;

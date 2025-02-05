@@ -13,6 +13,5 @@ namespace AplicacaoEscola.Models
         public int Periodo { get; set; }
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public int NumeroVagasTotal { get; set; }
-        public int NumeroVagasAtual {  get; set; }
     }
 }

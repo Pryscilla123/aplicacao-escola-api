@@ -15,34 +15,44 @@ namespace AplicacaoEscola.Repository
 
         public async Task<IEnumerable<Professor>> GetProfessoresAsync()
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = @"SELECT * FROM Professores";
 
-                IEnumerable<Professor> professores = (await conn.QueryAsync<Professor>(sql: query)).ToList();
+                IEnumerable<Professor> professores = (await _db.Connection.QueryAsync<Professor>(sql: query)).ToList();
 
                 return professores;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<Professor> GetProfessorAsync(int id)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = @"SELECT * FROM Professores WHERE id = @id";
 
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id);
 
-                Professor professor = await conn.QueryFirstOrDefaultAsync<Professor>(query, parametros);
+                Professor professor = await _db.Connection.QueryFirstOrDefaultAsync<Professor>(query, parametros);
 
                 return professor;
+            }
+            catch (Exception ex)
+            { 
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<int> SaveProfessorAsync(Professor professor)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = @"INSERT INTO Professores(nome, idade) VALUES (@nome, @idade)";
 
@@ -50,15 +60,20 @@ namespace AplicacaoEscola.Repository
                 parametros.Add("@nome", professor.Nome);
                 parametros.Add("@idade", professor.Idade);
 
-                var result = await conn.ExecuteAsync(query, parametros);
+                var result = await _db.Connection.ExecuteAsync(query, parametros);
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message); 
+                throw;
             }
         }
 
         public async Task<int> UpdateProfessorAsync(int id, Professor professor)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = @"
                 UPDATE Professores SET nome = @nome, idade = @idade
@@ -70,27 +85,36 @@ namespace AplicacaoEscola.Repository
                 parametros.Add("@idade", professor.Idade);
                 parametros.Add("@id", id);
 
-                var result = await conn.ExecuteAsync(query, parametros);
+                var result = await _db.Connection.ExecuteAsync(query, parametros);
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
 
         }
 
         public async Task<int> DeleteProfessorAsync(int id)
         {
-            using (var conn = _db.Connection)
+            try
             {
                 string query = @"DELETE FROM Professores WHERE @id = id";
 
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id);
 
-                var result = await conn.ExecuteAsync(query, parametros);
+                var result = await _db.Connection.ExecuteAsync(query, parametros);
 
                 return result;
             }
-
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }

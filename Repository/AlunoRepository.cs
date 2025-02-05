@@ -16,39 +16,55 @@ namespace AplicacaoEscola.Repository
 
         public async Task<IEnumerable<Aluno>> GetAlunosAsync()
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = "SELECT * FROM Alunos";
-                List<Aluno> alunos = (await conn.QueryAsync<Aluno>(sql: query)).ToList();
+                List<Aluno> alunos = (await _db.Connection.QueryAsync<Aluno>(sql: query)).ToList();
+
                 return alunos;
+            } 
+            catch (Exception ex)
+            {
+               Console.WriteLine(ex.Message);
+               throw;
             }
         }
 
         public async Task<Aluno> GetAlunoByIdAsync(int id)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = "SELECT * FROM Alunos WHERE id = @id";
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id, DbType.Int32);
 
-                Aluno aluno = await conn.QueryFirstOrDefaultAsync<Aluno>(query, parametros);
+                Aluno aluno = await _db.Connection.QueryFirstOrDefaultAsync<Aluno>(query, parametros);
 
                 return aluno;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<int> SaveAlunoAsync(Aluno aluno)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = "INSERT INTO Alunos(nome, idade) VALUES (@nome, @idade)";
                 var parametros = new DynamicParameters();
                 parametros.Add("@nome", aluno.Nome, DbType.AnsiString);
                 parametros.Add("@idade", aluno.Idade, DbType.Int16);
 
-                var result = await conn.ExecuteAsync(query, parametros);
+                var result = await _db.Connection.ExecuteAsync(query, parametros);
                 return result;
+            }
+            catch (Exception ex)
+            { 
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
@@ -73,14 +89,20 @@ namespace AplicacaoEscola.Repository
 
         public async Task<int> DeleteAlunoAsync(int id)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string query = @"DELETE FROM Alunos WHERE id = @id";
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id, DbType.Int32);
 
-                var result = await conn.ExecuteAsync(query, parametros);
+                var result = await _db.Connection.ExecuteAsync(query, parametros);
+
                 return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }

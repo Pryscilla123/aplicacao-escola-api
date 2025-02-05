@@ -11,10 +11,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<DbSession>();
-builder.Services.AddTransient<IAlunoRepository, AlunoRepository>();
-builder.Services.AddTransient<IProfessorRepository, ProfessorRepository>();
-builder.Services.AddTransient<IMateriaRepository, MateriaRepository>();
-builder.Services.AddTransient<IAlunoMateriaRepository, AlunoMateriaRepository>();
+builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
+builder.Services.AddScoped<IProfessorRepository, ProfessorRepository>();
+builder.Services.AddScoped<IMateriaRepository, MateriaRepository>();
+builder.Services.AddScoped<IAlunoMateriaRepository, AlunoMateriaRepository>();
 
 var app = builder.Build();
 
