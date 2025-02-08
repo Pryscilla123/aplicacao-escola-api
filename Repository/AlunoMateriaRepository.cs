@@ -16,7 +16,7 @@ namespace AplicacaoEscola.Repository
 
         public async Task<int> DeleteAlunoMateriaAsync(int alunoId, int materiaId)
         {
-            using (var conn = _db.Connection)
+            try
             {
                 string removeAlunoMateria = @"
                     DELETE FROM aluno_materia WHERE aluno_id=@aluno_id AND materia_id=@materia_id
@@ -26,21 +26,20 @@ namespace AplicacaoEscola.Repository
                 parametros.Add("@aluno_id", alunoId, DbType.Int16);
                 parametros.Add("@materia_id", materiaId, DbType.Int16);
 
-                var result = await conn.ExecuteAsync(removeAlunoMateria, parametros);
-
-                if (result == 0) return result;
-
-                string diminuiNumeroVagasMateriaQuery = @"UPDATE materias SET numero_vagas_atual=numero_vagas_atual+1 WHERE id=@materia_id";
-
-                result = await conn.ExecuteAsync(diminuiNumeroVagasMateriaQuery, parametros);
+                var result = await _db.Connection.ExecuteAsync(removeAlunoMateria, parametros);
 
                 return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<IEnumerable<AlunoMateria>> GetAlunoMaterias(int id)
         {
-            using (var conn = _db.Connection)
+            try
             {
                 string query = @"
                     SELECT 
@@ -59,15 +58,20 @@ namespace AplicacaoEscola.Repository
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id, DbType.Int16);
 
-                IEnumerable<AlunoMateria> alunoMaterias = (await conn.QueryAsync<AlunoMateria>(query, parametros)).ToList();
+                IEnumerable<AlunoMateria> alunoMaterias = (await _db.Connection.QueryAsync<AlunoMateria>(query, parametros)).ToList();
 
                 return alunoMaterias;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<IEnumerable<AlunoMateria>> GetAlunosMaterias()
         {
-            using (var conn = _db.Connection)
+            try
             {
                 string query = @"
                     SELECT 
@@ -82,15 +86,43 @@ namespace AplicacaoEscola.Repository
                     INNER JOIN professores as p on p.id=m.professor_id
                     ";
 
-                IEnumerable<AlunoMateria> alunosMaterias = (await conn.QueryAsync<AlunoMateria>(query)).ToList();
+                IEnumerable<AlunoMateria> alunosMaterias = (await _db.Connection.QueryAsync<AlunoMateria>(query)).ToList();
 
                 return alunosMaterias;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<int> GetCountAlunosByMateria(int materiaId)
+        {
+            try
+            {
+                string query = @"
+                    SELECT COUNT(*) FROM aluno_materia 
+                    WHERE materia_id = @materia_id
+                    ";
+
+                var parametros = new DynamicParameters();
+                parametros.Add("@materia_id", materiaId, DbType.Int16);
+
+                int result = await _db.Connection.QueryFirstOrDefaultAsync<int>(query, parametros);
+
+                return 0;
+            } 
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
         public async Task<int> SaveAlunoMateriaAsync(int alunoId, int materiaId)
         {
-            using(var conn = _db.Connection)
+            try
             {
                 string addAlunoMateria = @"
                     INSERT INTO aluno_materia (aluno_id, materia_id) VALUES (@aluno_id, @materia_id)
@@ -100,15 +132,14 @@ namespace AplicacaoEscola.Repository
                 parametros.Add("@aluno_id", alunoId, DbType.Int16);
                 parametros.Add("@materia_id", materiaId, DbType.Int16);
 
-                var result = await conn.ExecuteAsync(addAlunoMateria, parametros);
-
-                if (result == 0) return result;
-
-                string diminuiNumeroVagasMateriaQuery = @"UPDATE materias SET numero_vagas_atual=numero_vagas_atual-1 WHERE id=@materia_id";
-                
-                result = await conn.ExecuteAsync(diminuiNumeroVagasMateriaQuery, parametros);
+                var result = await _db.Connection.ExecuteAsync(addAlunoMateria, parametros);
 
                 return result;
+            }
+            catch (Exception ex) 
+            {
+                Console.WriteLine(ex.Message);
+                throw;
             }
         }
     }

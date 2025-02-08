@@ -31,7 +31,7 @@ namespace AplicacaoEscola.Repository
                 var parametros = new DynamicParameters();
                 parametros.Add("@id", id, DbType.Int16);
 
-                Materia materia = await _db.Connection.QueryFirstOrDefaultAsync<Materia>(query);
+                Materia materia = await _db.Connection.QueryFirstOrDefaultAsync<Materia>(query, parametros, null, 60);
 
                 return materia;
 

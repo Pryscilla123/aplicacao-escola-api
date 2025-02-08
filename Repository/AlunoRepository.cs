@@ -53,10 +53,11 @@ namespace AplicacaoEscola.Repository
         {
             try
             {
-                string query = "INSERT INTO Alunos(nome, idade) VALUES (@nome, @idade)";
+                string query = "INSERT INTO Alunos(nome, idade, periodo) VALUES (@nome, @idade, @periodo)";
                 var parametros = new DynamicParameters();
                 parametros.Add("@nome", aluno.Nome, DbType.AnsiString);
                 parametros.Add("@idade", aluno.Idade, DbType.Int16);
+                parametros.Add("@periodo", aluno.Periodo, DbType.Int16);
 
                 var result = await _db.Connection.ExecuteAsync(query, parametros);
                 return result;
@@ -73,7 +74,7 @@ namespace AplicacaoEscola.Repository
             using(var conn = _db.Connection)
             {
                 string query = @"
-                    UPDATE alunos SET nome = @nome, idade = @idade
+                    UPDATE alunos SET nome = @nome, idade = @idade, periodo = @periodo
                     WHERE id = @id
                     ";
 
@@ -81,6 +82,7 @@ namespace AplicacaoEscola.Repository
                 parametros.Add("@id", id);
                 parametros.Add("@nome", aluno.Nome, DbType.AnsiString);
                 parametros.Add("@idade", aluno.Idade, DbType.Int16);
+                parametros.Add("@periodo", aluno.Periodo, DbType.Int16);
 
                 var result = await conn.ExecuteAsync(query, parametros); 
                 return result;

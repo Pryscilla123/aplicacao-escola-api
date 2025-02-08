@@ -4,7 +4,8 @@ CREATE TABLE alunos
 (
     id int PRIMARY KEY IDENTITY,
     nome VARCHAR(80) NOT NULL,
-    idade TINYINT
+    idade TINYINT,
+    periodo TINYINT
 );
 
 CREATE TABLE professores
@@ -58,8 +59,5 @@ FROM aluno_materia as am
 INNER JOIN alunos as a on a.id=am.aluno_id
 INNER JOIN materias as m on m.id=am.materia_id
 INNER JOIN professores as p on p.id=m.professor_id
-
-UPDATE materias SET numero_vagas_atual=23 where id = 1;
-UPDATE materias SET numero_vagas_atual=25 where id = 2;
 
 DROP DATABASE Escola;

@@ -6,6 +6,7 @@ namespace AplicacaoEscola.Repository
     {
         Task<IEnumerable<AlunoMateria>> GetAlunosMaterias();
         Task<IEnumerable<AlunoMateria>> GetAlunoMaterias(int id);
+        Task<int> GetCountAlunosByMateria(int materiaId);
         Task<int> SaveAlunoMateriaAsync(int alunoId, int materiaId);
         Task<int> DeleteAlunoMateriaAsync(int alunoId, int materiaId);
     }
