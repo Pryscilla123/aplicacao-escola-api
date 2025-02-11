@@ -59,5 +59,3 @@ FROM aluno_materia as am
 INNER JOIN alunos as a on a.id=am.aluno_id
 INNER JOIN materias as m on m.id=am.materia_id
 INNER JOIN professores as p on p.id=m.professor_id
-
-DROP DATABASE Escola;
